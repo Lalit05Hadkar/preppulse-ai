@@ -81,7 +81,7 @@ const Home = () => {
                         <span>AI-Powered Career &amp; Interview Engine</span>
                     </div>
                     <h1>Create Your Targeted <span className='highlight'>Interview Strategy</span></h1>
-                    <p>Harness Google Gemini 3 Flash to dissect job specifications, identify competency gaps, and build your personalized preparation roadmap.</p>
+                    <p>Transform target job descriptions into a winning game plan. Analyze skill gaps, practice tailored questions, and step into your next interview with complete confidence.</p>
                     
                     <div className="quick-actions">
                         <button type="button" onClick={fillSampleJob} className="demo-fill-btn">
@@ -246,7 +246,7 @@ const Home = () => {
                 {/* Page Footer */}
                 <footer className='page-footer'>
                     <div className="footer-links">
-                        <span>PrepPulse AI &bull; Built with Express, React 19, MongoDB &amp; Gemini 3 Flash</span>
+                        <span>PrepPulse AI &bull; Built by Lalit Hadkar</span>
                     </div>
                 </footer>
             </div>
