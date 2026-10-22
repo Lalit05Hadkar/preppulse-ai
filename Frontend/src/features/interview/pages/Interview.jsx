@@ -245,10 +245,16 @@ const Interview = () => {
         }
     }, [ interviewId ])
 
+    const [ downloadError, setDownloadError ] = useState("")
+
     const handleDownloadResume = async () => {
         setDownloadingPdf(true)
+        setDownloadError("")
         try {
             await getResumePdf(interviewId)
+        } catch (err) {
+            console.error("Resume download failure:", err)
+            setDownloadError(err.message || "Could not generate resume. Please verify network.")
         } finally {
             setDownloadingPdf(false)
         }
@@ -322,6 +328,11 @@ const Interview = () => {
                                     </>
                                 )}
                             </button>
+                            {downloadError && (
+                                <p style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '0.4rem', textAlign: 'center' }}>
+                                    {downloadError}
+                                </p>
+                            )}
                         </div>
                     </nav>
 
