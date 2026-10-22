@@ -96,7 +96,7 @@
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Lalit05Hacker/preppulse-ai.git
+git clone https://github.com/Lalit05Hadkar/preppulse-ai.git
 cd preppulse-ai
 ```
 
@@ -150,4 +150,4 @@ You can feature this project on your resume with the following high-impact bulle
 
 Distributed under the MIT License. See `LICENSE` for details.
 
-Developed with ❤️ by **[Lalit Hadkar](https://github.com/Lalit05Hacker)**.
+Developed with ❤️ by **[Lalit Hadkar](https://github.com/Lalit05Hadkar)**.
