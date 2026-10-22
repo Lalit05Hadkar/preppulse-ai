@@ -19,11 +19,14 @@ const Register = () => {
         setError("")
         setSubmitting(true)
         try {
-            await handleRegister({ username, email, password })
-            navigate("/")
+            const user = await handleRegister({ username, email, password })
+            if (user) {
+                navigate("/")
+            }
         } catch (err) {
             console.error(err)
-            setError("Could not register user. Please check details or try another email.")
+            const msg = err.response?.data?.message || err.response?.data?.error || "Could not register user. Please try again."
+            setError(msg)
         } finally {
             setSubmitting(false)
         }

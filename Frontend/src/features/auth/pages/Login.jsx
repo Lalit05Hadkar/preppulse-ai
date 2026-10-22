@@ -18,11 +18,14 @@ const Login = () => {
         setError("")
         setSubmitting(true)
         try {
-            await handleLogin({ email, password })
-            navigate('/')
+            const user = await handleLogin({ email, password })
+            if (user) {
+                navigate('/')
+            }
         } catch (err) {
             console.error(err)
-            setError("Invalid email or password. Please try again.")
+            const msg = err.response?.data?.message || err.response?.data?.error || "Invalid email or password. Please try again."
+            setError(msg)
         } finally {
             setSubmitting(false)
         }

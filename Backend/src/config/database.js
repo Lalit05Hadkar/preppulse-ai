@@ -1,18 +1,30 @@
 const mongoose = require("mongoose")
 const dns = require("dns")
 
-// Ensure Node.js resolves SRV records via reliable public DNS on Windows
-dns.setServers(["8.8.8.8", "1.1.1.1"])
+// On Windows, set Google/Cloudflare DNS for SRV records resolution
+if (process.platform === "win32") {
+    try {
+        dns.setServers(["8.8.8.8", "1.1.1.1"])
+    } catch (e) {
+        console.warn("Could not set custom DNS servers:", e.message)
+    }
+}
 
 async function connectToDB() {
-
     try {
-        await mongoose.connect(process.env.MONGO_URI)
+        if (!process.env.MONGO_URI) {
+            console.error("CRITICAL: MONGO_URI is missing in process.env!")
+            return
+        }
+
+        await mongoose.connect(process.env.MONGO_URI, {
+            serverSelectionTimeoutMS: 8000
+        })
 
         console.log("Connected to Database")
     }
     catch (err) {
-        console.log(err)
+        console.error("Database connection error:", err.message)
     }
 }
 
