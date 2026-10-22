@@ -124,23 +124,308 @@ async function generatePdfFromHtml(htmlContent) {
     }
 }
 
+function wrapInExecutiveTemplate(htmlContent) {
+    let innerBody = htmlContent
+    const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*)<\/body>/i)
+    if (bodyMatch) {
+        innerBody = bodyMatch[1]
+    } else {
+        innerBody = innerBody
+            .replace(/<!DOCTYPE[^>]*>/gi, '')
+            .replace(/<\/?html[^>]*>/gi, '')
+            .replace(/<head[\s\S]*?<\/head>/gi, '')
+    }
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATS Tailored Resume</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #334155;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --accent: #4f46e5;
+            --accent-hover: #4338ca;
+            --page-bg: #f8fafc;
+            --sheet-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--page-bg);
+            color: var(--primary);
+            line-height: 1.5;
+            font-size: 10pt;
+            -webkit-font-smoothing: antialiased;
+            padding: 24px 16px;
+        }
+
+        /* Top Action Floating Bar */
+        .resume-action-bar {
+            max-width: 820px;
+            margin: 0 auto 20px auto;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+        }
+
+        .action-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        .action-badge {
+            background: #e0e7ff;
+            color: var(--accent);
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .btn-print {
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-print:hover {
+            background: var(--accent-hover);
+        }
+
+        /* The Paper Sheet */
+        .resume-sheet {
+            max-width: 820px;
+            margin: 0 auto;
+            background: var(--sheet-bg);
+            padding: 44px 52px;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            border: 1px solid var(--border);
+        }
+
+        /* Resume Content Formatting */
+        .header, header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-size: 22pt;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--primary);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .contact-info, .contact {
+            font-size: 9pt;
+            color: var(--secondary);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px 14px;
+            margin-top: 6px;
+        }
+
+        .contact-info a, .contact a {
+            color: var(--secondary);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--muted);
+        }
+
+        .section, section {
+            margin-bottom: 16px;
+        }
+
+        .section-title, h2 {
+            font-size: 11pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            border-bottom: 1.5px solid var(--border);
+            padding-bottom: 4px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 9.5pt;
+            color: var(--secondary);
+            line-height: 1.45;
+            margin-bottom: 6px;
+            text-align: justify;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 4px 0 8px 0;
+        }
+
+        li {
+            font-size: 9pt;
+            color: var(--secondary);
+            line-height: 1.4;
+            margin-bottom: 3px;
+        }
+
+        .project, .experience-item, .item {
+            margin-bottom: 12px;
+        }
+
+        .project-header, .experience-header, .education-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-weight: 700;
+            font-size: 10pt;
+            color: var(--primary);
+        }
+
+        .project-meta {
+            font-size: 8.5pt;
+            color: var(--muted);
+            font-style: italic;
+            margin-top: 1px;
+            margin-bottom: 4px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 5px;
+        }
+
+        .skill-item {
+            font-size: 9pt;
+            color: var(--secondary);
+            line-height: 1.4;
+        }
+
+        .skill-item strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .certification-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9pt;
+            margin-bottom: 3px;
+            color: var(--secondary);
+        }
+
+        /* Print Settings */
+        @page {
+            size: A4;
+            margin: 12mm 15mm;
+        }
+
+        @media print {
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                color: #000000 !important;
+            }
+
+            .no-print, .resume-action-bar {
+                display: none !important;
+            }
+
+            .resume-sheet {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+            }
+
+            .section, .project, .item {
+                page-break-inside: avoid;
+            }
+
+            a {
+                color: #000000 !important;
+                border: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-action-bar no-print">
+        <div class="action-info">
+            <span class="action-badge">ATS Optimized</span>
+            <span>PrepPulse AI Resume Engine</span>
+        </div>
+        <button class="btn-print" onclick="window.print()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Save as PDF / Print
+        </button>
+    </div>
+    <div class="resume-sheet">
+        ${innerBody}
+    </div>
+</body>
+</html>`
+}
+
 async function generateResumePdf({ resume, selfDescription, jobDescription }) {
 
     const resumePdfSchema = z.object({
-        html: z.string().describe("The HTML content of the resume which can be converted to PDF using any library like puppeteer")
+        html: z.string().describe("The semantic HTML body content of the resume, including header, summary, competencies, experience/projects, and education")
     })
 
-    const prompt = `Generate a high-impact, professional, ATS-optimized resume for a candidate tailored to this target job description:
-Resume Background: ${resume || "N/A"}
-Self Description: ${selfDescription || "N/A"}
+    const prompt = `Generate a high-impact, professional, ATS-optimized executive resume for a candidate tailored to this target job description:
+Candidate Resume Details: ${resume || "N/A"}
+Candidate Self Description: ${selfDescription || "N/A"}
 Target Job Description: ${jobDescription}
 
 Key Requirements:
-1. Provide a single JSON field "html" containing complete, standalone HTML (including <!DOCTYPE html>, <html>, <head>, <style>, and <body>).
-2. The HTML must have embedded CSS with print-optimized styles (@page { size: A4; margin: 15mm; } @media print { body { padding: 0; } }).
-3. Clean modern typography (Inter/Arial/Helvetica), clear hierarchy, contact header, targeted summary, core technical competencies, professional experience with quantified impact bullet points, and education.
-4. ATS friendly: semantic structure, standard section headers, no complex multi-column clipping.
-5. High quality, polished, senior presentation.`
+1. Provide a single JSON field "html" containing clean, semantic HTML sections (use <div class="header">, <h1> for Name, <div class="contact-info">, <div class="section"><div class="section-title">Section Name</div>...</div>).
+2. Professional structure:
+   - Header with Candidate Name, location, phone, email, and LinkedIn/GitHub links.
+   - Professional Summary: 3-4 lines highlighting core value proposition aligned with target role.
+   - Core Technical Competencies: clean categories (e.g. Languages & Frameworks, Cloud & DevOps, Machine Learning & AI, Tools & Methodologies).
+   - Key Projects & Professional Experience: 3-4 projects with title, tech stack meta line, and 3 high-impact quantified bullet points starting with strong action verbs.
+   - Certifications & Education with degree, university, graduation year, and CGPA.
+3. Keep the content concise, ATS-readable, and formatted to fit cleanly on A4 paper.`
 
     const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
@@ -152,32 +437,22 @@ Key Requirements:
     })
 
     const jsonContent = JSON.parse(response.text)
-    let rawHtml = jsonContent.html || ""
-
-    // Ensure print styles are included
-    if (!rawHtml.includes("@page")) {
-        const printStyles = `<style>@page { size: A4; margin: 15mm; } @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 0; } .no-print { display: none !important; } }</style>`
-        if (rawHtml.includes("<head>")) {
-            rawHtml = rawHtml.replace("<head>", `<head>${printStyles}`)
-        } else {
-            rawHtml = `${printStyles}${rawHtml}`
-        }
-    }
+    const formattedHtml = wrapInExecutiveTemplate(jsonContent.html || "")
 
     // Try Puppeteer PDF rendering
     try {
-        const pdfBuffer = await generatePdfFromHtml(rawHtml)
+        const pdfBuffer = await generatePdfFromHtml(formattedHtml)
         return {
             type: "pdf",
             data: pdfBuffer,
-            html: rawHtml
+            html: formattedHtml
         }
     } catch (err) {
         console.warn("Puppeteer PDF generation unavailable in current environment, falling back to styled HTML resume:", err.message)
         return {
             type: "html",
-            data: rawHtml,
-            html: rawHtml
+            data: formattedHtml,
+            html: formattedHtml
         }
     }
 }

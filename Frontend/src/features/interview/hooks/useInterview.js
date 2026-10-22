@@ -75,28 +75,45 @@ export const useInterview = () => {
 
             if (blobType.includes("html")) {
                 const htmlText = await response.text()
-                // Open printable preview in new tab
-                const printWindow = window.open("", "_blank")
-                if (printWindow) {
-                    printWindow.document.open()
-                    printWindow.document.write(htmlText)
-                    printWindow.document.close()
+
+                // Trigger native browser print / Save as PDF via hidden iframe (not blocked by popup blockers)
+                try {
+                    const iframe = document.createElement("iframe")
+                    iframe.style.position = "fixed"
+                    iframe.style.right = "0"
+                    iframe.style.bottom = "0"
+                    iframe.style.width = "0"
+                    iframe.style.height = "0"
+                    iframe.style.border = "0"
+                    document.body.appendChild(iframe)
+
+                    iframe.contentDocument.open()
+                    iframe.contentDocument.write(htmlText)
+                    iframe.contentDocument.close()
+
                     setTimeout(() => {
-                        printWindow.focus()
-                        printWindow.print()
-                    }, 500)
-                } else {
-                    // Fallback to file download if popups are blocked
-                    const blob = new Blob([ htmlText ], { type: "text/html" })
-                    const url = window.URL.createObjectURL(blob)
-                    const link = document.createElement("a")
-                    link.href = url
-                    link.setAttribute("download", `resume_${interviewReportId}.html`)
-                    document.body.appendChild(link)
-                    link.click()
-                    document.body.removeChild(link)
-                    window.URL.revokeObjectURL(url)
-                }
+                        try {
+                            iframe.contentWindow.focus()
+                            iframe.contentWindow.print()
+                        } catch (_) {}
+                        setTimeout(() => {
+                            if (document.body.contains(iframe)) {
+                                document.body.removeChild(iframe)
+                            }
+                        }, 2500)
+                    }, 400)
+                } catch (_) {}
+
+                // Also save the executive resume file for offline viewing
+                const blob = new Blob([ htmlText ], { type: "text/html" })
+                const url = window.URL.createObjectURL(blob)
+                const link = document.createElement("a")
+                link.href = url
+                link.setAttribute("download", `resume_${interviewReportId}.html`)
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+                window.URL.revokeObjectURL(url)
             } else {
                 // PDF Binary Download
                 const url = window.URL.createObjectURL(new Blob([ response ], { type: "application/pdf" }))
