@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router'
 import "../auth.form.scss"
 import { useAuth } from '../hooks/useAuth'
@@ -11,7 +11,13 @@ const Register = () => {
     const [ submitting, setSubmitting ] = useState(false)
     const [ error, setError ] = useState("")
 
-    const { loading, handleRegister } = useAuth()
+    const { user, loading, handleRegister } = useAuth()
+
+    useEffect(() => {
+        if (!loading && user) {
+            navigate("/", { replace: true })
+        }
+    }, [user, loading, navigate])
     
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -19,8 +25,8 @@ const Register = () => {
         setError("")
         setSubmitting(true)
         try {
-            const user = await handleRegister({ username, email, password })
-            if (user) {
+            const registeredUser = await handleRegister({ username, email, password })
+            if (registeredUser) {
                 navigate("/")
             }
         } catch (err) {
@@ -32,7 +38,15 @@ const Register = () => {
         }
     }
 
-    if (loading) {
+    const hasStoredToken = (() => {
+        try {
+            return Boolean(localStorage.getItem("token"))
+        } catch {
+            return false
+        }
+    })()
+
+    if (loading && hasStoredToken) {
         return (
             <main className="auth-page">
                 <div className="spinner-ring" />

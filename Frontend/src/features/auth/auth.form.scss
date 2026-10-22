@@ -82,8 +82,10 @@
                 padding: 0.8rem 1rem;
                 color: #f8fafc;
                 font-family: inherit;
-                font-size: 0.9rem;
+                font-size: 1rem;
                 outline: none;
+                -webkit-appearance: none;
+                touch-action: manipulation;
                 transition: border-color 0.2s, box-shadow 0.2s;
 
                 &:focus {
@@ -103,6 +105,9 @@
             padding: 0.85rem;
             font-size: 0.95rem;
             font-weight: 700;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+            cursor: pointer;
         }
     }
 

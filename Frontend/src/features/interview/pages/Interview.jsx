@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import '../style/interview.scss'
 import { useInterview } from '../hooks/useInterview.js'
-import { useNavigate, useParams, Link } from 'react-router'
+import { useParams, Link } from 'react-router'
 import Navbar from '../../../components/Navbar.jsx'
 
 const NAV_ITEMS = [
