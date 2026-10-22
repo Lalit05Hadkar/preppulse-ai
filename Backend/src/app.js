@@ -6,12 +6,18 @@ const app = express()
 
 const allowedOrigins = [
     "http://localhost:5173",
+    "https://preppulse-ai.vercel.app",
     process.env.FRONTEND_URL
 ].filter(Boolean)
 
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production") {
+        if (
+            !origin || 
+            allowedOrigins.includes(origin) || 
+            /\.vercel\.app$/.test(origin) || 
+            process.env.NODE_ENV !== "production"
+        ) {
             callback(null, true)
         } else {
             callback(new Error("Not allowed by CORS"))
