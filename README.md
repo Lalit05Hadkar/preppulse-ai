@@ -8,7 +8,7 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47a248.svg)](https://www.mongodb.com/)
 [![Gemini](https://img.shields.io/badge/Google_Gemini-3_Flash-4285F4.svg)](https://ai.google.dev/)
 
-🚀 **Live Web App:** [https://preppulse-ai.vercel.app](https://preppulse-ai.vercel.app)  
+🚀 **Live Web App:** [https://preppulse-ai-nine.vercel.app](https://preppulse-ai-nine.vercel.app)  
 📡 **Live API Endpoint:** [https://preppulse-ai-vzjf.onrender.com](https://preppulse-ai-vzjf.onrender.com/api/health)
 
 > **PrepPulse AI** is a production-grade full-stack career acceleration platform that synthesizes job descriptions and candidate resumes to generate personalized technical strategies, interactive mock interviews with instant AI feedback, skill gap matrices, and automated ATS-tailored PDF resumes.
